@@ -7,16 +7,13 @@ import java.util.Set;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.itelg.texin.domain.Cell;
 import com.itelg.texin.domain.Row;
+import com.itelg.texin.domain.exception.ParsingFailedException;
 
 public class ExcelFileParser extends AbstractFileParser
 {
-	private static final Logger log = LoggerFactory.getLogger(ExcelFileParser.class);
-
 	@Override
 	public boolean applies(final String fileName)
 	{
@@ -24,7 +21,7 @@ public class ExcelFileParser extends AbstractFileParser
 	}
 
 	@Override
-	public Set<Row> parse(final InputStream stream)
+	public Set<Row> parse(final InputStream stream) throws ParsingFailedException
 	{
 		Set<Row> rows = new LinkedHashSet<>();
 
@@ -105,7 +102,6 @@ public class ExcelFileParser extends AbstractFileParser
 
 					} else {
 
-						log.warn("Unknown cell-type(" + cell.getCellType() + " - " + cellHeader + ") - try to fetch string-value");
 						cell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING);
 						cellValue = cell.getStringCellValue().trim();
 					}
@@ -118,7 +114,7 @@ public class ExcelFileParser extends AbstractFileParser
 
 		} catch (Exception e) {
 
-			log.error(e.getMessage(), e);
+			throw new ParsingFailedException(e.getMessage());
 		}
 
 		return rows;
