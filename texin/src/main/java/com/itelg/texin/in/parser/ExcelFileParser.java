@@ -1,4 +1,4 @@
-package com.itelg.texin.parser;
+package com.itelg.texin.in.parser;
 
 import java.io.InputStream;
 import java.util.LinkedHashSet;
@@ -13,18 +13,18 @@ import org.slf4j.LoggerFactory;
 import com.itelg.texin.domain.Cell;
 import com.itelg.texin.domain.Row;
 
-public class ExcelFileParser implements FileParser
+public class ExcelFileParser extends AbstractFileParser
 {
 	private static final Logger log = LoggerFactory.getLogger(ExcelFileParser.class);
 
 	@Override
-	public boolean applies(String fileName)
+	public boolean applies(final String fileName)
 	{
 		return fileName.endsWith(".xlsx");
 	}
 
 	@Override
-	public Set<Row> parse(InputStream stream)
+	public Set<Row> parse(final InputStream stream)
 	{
 		Set<Row> rows = new LinkedHashSet<>();
 

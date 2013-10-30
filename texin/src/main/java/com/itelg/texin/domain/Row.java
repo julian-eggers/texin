@@ -1,14 +1,14 @@
 package com.itelg.texin.domain;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class Row
 {
 	private Integer number;
-	private Set<Cell> cells = new HashSet<>();
+	private Set<Cell> cells = new LinkedHashSet<>();
 
-	public Row(Integer number)
+	public Row(final Integer number)
 	{
 		setNumber(number);
 	}
@@ -18,7 +18,7 @@ public class Row
 		return number;
 	}
 
-	public void setNumber(Integer number)
+	public void setNumber(final Integer number)
 	{
 		this.number = number;
 	}
@@ -28,12 +28,12 @@ public class Row
 		return cells;
 	}
 
-	public void setCells(Set<Cell> cells)
+	public void setCells(final Set<Cell> cells)
 	{
 		this.cells = cells;
 	}
 
-	public void addCell(Cell cell)
+	public void addCell(final Cell cell)
 	{
 		getCells().add(cell);
 	}
