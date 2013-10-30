@@ -2,8 +2,10 @@ package com.itelg.texin.in.processor;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -14,17 +16,62 @@ import com.itelg.texin.domain.exception.ParsingFailedException;
 import com.itelg.texin.in.parser.CsvFileParser;
 import com.itelg.texin.in.parser.ExcelFileParser;
 import com.itelg.texin.in.parser.FileParser;
+import com.itelg.texin.in.parser.RowParsedListener;
+import com.itelg.texin.in.parser.TxtFileParser;
 
 
 public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 {
-	private String fileName;
+	protected String fileName;
 	protected Set<Row> rows = new LinkedHashSet<>();
 	protected Set<T> items = new LinkedHashSet<>();
 	protected Set<ImportError> importErrors = new LinkedHashSet<>();
+	private final Map<String, FileParser> fileParsers = new HashMap<>();
+	private final List<RowParsedListener> rowParsedListeners = new ArrayList<>();
+
+	public SimpleImportProcessor()
+	{
+		addFileParser(new CsvFileParser());
+		addFileParser(new TxtFileParser());
+		addFileParser(new ExcelFileParser());
+	}
+
+	/**
+	 * If any listener is added, the row-set will be empty
+	 *
+	 */
+	@Override
+	public void addRowParsedListener(final RowParsedListener listener)
+	{
+		rowParsedListeners.add(listener);
+	}
+
+	/**
+	 * If any listener is added, the row-set will be empty
+	 *
+	 */
+	@Override
+	public void addRowParsedListeners(final List<RowParsedListener> listeners)
+	{
+		for (RowParsedListener listener : listeners)
+		{
+			addRowParsedListener(listener);
+		}
+	}
 
 	@Override
-	public void parse(String fileName, InputStream stream) throws ParsingFailedException
+	public void addFileParser(final FileParser fileParser)
+	{
+		if (fileParsers.containsKey(fileParser.getClass().getCanonicalName()))
+		{
+			fileParsers.remove(fileParser.getClass().getCanonicalName());
+		}
+
+		fileParsers.put(fileParser.getClass().getCanonicalName(), fileParser);
+	}
+
+	@Override
+	public void parse(final String fileName, final InputStream stream) throws ParsingFailedException
 	{
 		this.fileName = fileName;
 		parseFile(stream);
@@ -36,17 +83,16 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 		}
 	}
 
-	protected void parseFile(InputStream stream) throws ParsingFailedException
+	protected void parseFile(final InputStream stream) throws ParsingFailedException
 	{
-		List<FileParser> fileParsers = new ArrayList<>();
-		fileParsers.add(new CsvFileParser());
-		fileParsers.add(new ExcelFileParser());
-
-		for (FileParser fileParser : fileParsers)
+		for (FileParser fileParser : fileParsers.values())
 		{
 			if (fileParser.applies(getFileName()))
 			{
+				System.out.println("Parsers: " + fileParsers.size());
+				fileParser.addRowParsedListeners(rowParsedListeners);
 				rows = fileParser.parse(stream);
+				break;
 			}
 		}
 	}
@@ -55,9 +101,15 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 	public abstract void mapRow(Row row);
 
 	@Override
-	public void addItem(T item)
+	public void addItem(final T item)
 	{
 		items.add(item);
+	}
+
+	@Override
+	public void addImportError(final ImportError importError)
+	{
+		importErrors.add(importError);
 	}
 
 	@Override
@@ -66,6 +118,7 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 		return fileName;
 	}
 
+	@Override
 	public Set<Row> getRows()
 	{
 		return rows;

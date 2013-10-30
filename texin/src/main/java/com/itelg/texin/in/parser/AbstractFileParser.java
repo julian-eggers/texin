@@ -18,4 +18,13 @@ public abstract class AbstractFileParser implements FileParser
 
 		listeners.add(listener);
 	}
+
+	@Override
+	public void addRowParsedListeners(final List<RowParsedListener> listeners)
+	{
+		for (RowParsedListener rowParsedListener : listeners)
+		{
+			addRowParsedListener(rowParsedListener);
+		}
+	}
 }

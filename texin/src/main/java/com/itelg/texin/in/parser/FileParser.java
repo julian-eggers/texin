@@ -1,6 +1,7 @@
 package com.itelg.texin.in.parser;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
 
 import com.itelg.texin.domain.Row;
@@ -17,4 +18,10 @@ public interface FileParser
 	 *
 	 */
 	public void addRowParsedListener(RowParsedListener listener);
+
+	/**
+	 * If any listener is added, the row-set will be empty
+	 *
+	 */
+	public void addRowParsedListeners(List<RowParsedListener> listeners);
 }

@@ -14,11 +14,12 @@ import com.itelg.texin.domain.exception.ParsingFailedException;
 
 public class CsvFileParser extends AbstractFileParser
 {
+	private String cellDelimeter = ";";
+
 	@Override
 	public boolean applies(final String fileName)
 	{
-		return (fileName.endsWith(".csv") ||
-				fileName.endsWith(".txt"));
+		return fileName.endsWith(".csv");
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class CsvFileParser extends AbstractFileParser
 
 		try {
 
-			CSVReader reader = new CSVReader(new InputStreamReader(stream), '\t');
+			CSVReader reader = new CSVReader(new InputStreamReader(stream), cellDelimeter.charAt(0));
 			String[] cells;
 			String header[] = null;
 			int rowNumber = 0;
@@ -77,5 +78,10 @@ public class CsvFileParser extends AbstractFileParser
 		}
 
 		return rows;
+	}
+
+	public void setCellDelimeter(final String cellDelimeter)
+	{
+		this.cellDelimeter = cellDelimeter;
 	}
 }
