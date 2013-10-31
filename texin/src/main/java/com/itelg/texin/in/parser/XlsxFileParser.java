@@ -12,12 +12,12 @@ import com.itelg.texin.domain.Cell;
 import com.itelg.texin.domain.Row;
 import com.itelg.texin.domain.exception.ParsingFailedException;
 
-public class ExcelFileParser extends AbstractFileParser
+public class XlsxFileParser extends AbstractFileParser
 {
 	@Override
 	public boolean applies(final String fileName)
 	{
-		return fileName.endsWith(".xlsx");
+		return fileName.toLowerCase().endsWith(".xlsx");
 	}
 
 	@Override
@@ -109,7 +109,17 @@ public class ExcelFileParser extends AbstractFileParser
 					row.addCell(new Cell(row, (column + 1), cellHeader, cellValue));
 				}
 
-				rows.add(row);
+				if (listeners != null && listeners.isEmpty() == false)
+				{
+					for (RowParsedListener listener : listeners)
+					{
+						listener.parsed(row);
+					}
+
+				} else {
+
+					rows.add(row);
+				}
 			}
 
 		} catch (Exception e) {

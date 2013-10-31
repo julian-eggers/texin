@@ -14,10 +14,10 @@ import com.itelg.texin.domain.ImportError;
 import com.itelg.texin.domain.Row;
 import com.itelg.texin.domain.exception.ParsingFailedException;
 import com.itelg.texin.in.parser.CsvFileParser;
-import com.itelg.texin.in.parser.ExcelFileParser;
 import com.itelg.texin.in.parser.FileParser;
 import com.itelg.texin.in.parser.RowParsedListener;
 import com.itelg.texin.in.parser.TxtFileParser;
+import com.itelg.texin.in.parser.XlsxFileParser;
 
 
 public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
@@ -33,7 +33,7 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 	{
 		addFileParser(new CsvFileParser());
 		addFileParser(new TxtFileParser());
-		addFileParser(new ExcelFileParser());
+		addFileParser(new XlsxFileParser());
 	}
 
 	/**
@@ -89,7 +89,6 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 		{
 			if (fileParser.applies(getFileName()))
 			{
-				System.out.println("Parsers: " + fileParsers.size());
 				fileParser.addRowParsedListeners(rowParsedListeners);
 				rows = fileParser.parse(stream);
 				break;

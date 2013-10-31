@@ -10,6 +10,6 @@ public class TxtFileParser extends CsvFileParser
 	@Override
 	public boolean applies(final String fileName)
 	{
-		return fileName.endsWith(".txt");
+		return fileName.toLowerCase().endsWith(".txt");
 	}
 }

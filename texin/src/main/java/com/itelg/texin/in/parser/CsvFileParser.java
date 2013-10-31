@@ -19,7 +19,7 @@ public class CsvFileParser extends AbstractFileParser
 	@Override
 	public boolean applies(final String fileName)
 	{
-		return fileName.endsWith(".csv");
+		return fileName.toLowerCase().endsWith(".csv");
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class CsvFileParser extends AbstractFileParser
 						}
 					}
 
-					if (listeners != null)
+					if (listeners != null && listeners.isEmpty() == false)
 					{
 						for (RowParsedListener listener : listeners)
 						{
