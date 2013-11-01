@@ -1,6 +1,8 @@
 package com.itelg.texin.domain;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Row
@@ -36,5 +38,17 @@ public class Row
 	public void addCell(final Cell cell)
 	{
 		getCells().add(cell);
+	}
+
+	public Map<String, Object> getCellsAsMap()
+	{
+		Map<String, Object> cellMap = new LinkedHashMap<>();
+
+		for (Cell cell : getCells())
+		{
+			cellMap.put(cell.getColumnHeader(), cell.getValue());
+		}
+
+		return cellMap;
 	}
 }
