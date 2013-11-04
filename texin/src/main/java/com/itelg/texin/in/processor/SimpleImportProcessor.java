@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.itelg.texin.domain.ImportError;
 import com.itelg.texin.domain.Row;
+import com.itelg.texin.domain.exception.NoParserAppliedException;
 import com.itelg.texin.domain.exception.ParsingFailedException;
 import com.itelg.texin.in.parser.CsvFileParser;
 import com.itelg.texin.in.parser.FileParser;
@@ -43,7 +44,10 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 	@Override
 	public void addRowParsedListener(final RowParsedListener listener)
 	{
-		rowParsedListeners.add(listener);
+		if (rowParsedListeners.contains(listener) == false)
+		{
+			rowParsedListeners.add(listener);
+		}
 	}
 
 	/**
@@ -71,7 +75,7 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 	}
 
 	@Override
-	public void parse(final String fileName, final InputStream stream) throws ParsingFailedException
+	public void parse(final String fileName, final InputStream stream) throws ParsingFailedException, NoParserAppliedException
 	{
 		rows = new LinkedHashSet<>();
 		items = new LinkedHashSet<>();
@@ -86,16 +90,24 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 		}
 	}
 
-	protected void parseFile(final InputStream stream) throws ParsingFailedException
+	protected void parseFile(final InputStream stream) throws ParsingFailedException, NoParserAppliedException
 	{
+		boolean parserApplied = false;
+
 		for (FileParser fileParser : fileParsers.values())
 		{
 			if (fileParser.applies(getFileName()))
 			{
 				fileParser.addRowParsedListeners(rowParsedListeners);
 				rows = fileParser.parse(stream);
+				parserApplied = true;
 				break;
 			}
+		}
+
+		if (parserApplied == false)
+		{
+			throw new NoParserAppliedException();
 		}
 	}
 

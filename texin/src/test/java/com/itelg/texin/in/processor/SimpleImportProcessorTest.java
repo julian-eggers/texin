@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.itelg.texin.domain.Row;
+import com.itelg.texin.domain.exception.NoParserAppliedException;
 import com.itelg.texin.domain.exception.ParsingFailedException;
 import com.itelg.texin.in.parser.CsvFileParser;
 import com.itelg.texin.in.parser.RowParsedListener;
@@ -13,7 +14,7 @@ import com.itelg.texin.in.parser.RowParsedListener;
 public class SimpleImportProcessorTest
 {
 	@Test
-	public void testValidProcess() throws ParsingFailedException
+	public void testValidProcess() throws ParsingFailedException, NoParserAppliedException
 	{
 		ImportProcessor<TestObject> processor = new ValidTestImportProcessor();
 		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv");
@@ -27,7 +28,7 @@ public class SimpleImportProcessorTest
 	}
 
 	@Test
-	public void testValidProcessWithListeners() throws ParsingFailedException
+	public void testValidProcessWithListeners() throws ParsingFailedException, NoParserAppliedException
 	{
 		ImportProcessor<TestObject> processor = new ValidTestImportProcessor();
 		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv");
@@ -37,7 +38,7 @@ public class SimpleImportProcessorTest
 	}
 
 	@Test
-	public void testConfiguredFileParser() throws ParsingFailedException
+	public void testConfiguredFileParser() throws ParsingFailedException, NoParserAppliedException
 	{
 		ImportProcessor<TestObject> processor = new ValidTestImportProcessor();
 		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile2.csv");
@@ -49,6 +50,15 @@ public class SimpleImportProcessorTest
 		processor.parse("testfile2.csv", stream);
 		Assert.assertEquals(1, processor.getRows().size());
 		Assert.assertEquals(7, processor.getRows().iterator().next().getCells().size());
+	}
+
+	@Test(expected = NoParserAppliedException.class)
+	public void testNoParsedAppliedException() throws ParsingFailedException, NoParserAppliedException
+	{
+		ImportProcessor<TestObject> processor = new ValidTestImportProcessor();
+		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv");
+		processor.addRowParsedListener(new SimpleRowParsedListener());
+		processor.parse("testfile.pdf", stream);
 	}
 
 	private class ValidTestImportProcessor extends SimpleImportProcessor<TestObject>
