@@ -22,12 +22,12 @@ import com.itelg.texin.in.parser.XlsxFileParser;
 
 public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 {
-	protected String fileName;
-	protected Set<Row> rows = new LinkedHashSet<>();
-	protected Set<T> items = new LinkedHashSet<>();
-	protected Set<ImportError> importErrors = new LinkedHashSet<>();
 	private final Map<String, FileParser> fileParsers = new HashMap<>();
-	private final List<RowParsedListener> rowParsedListeners = new ArrayList<>();
+	private String fileName;
+	private Set<Row> rows = new LinkedHashSet<>();
+	private Set<T> items = new LinkedHashSet<>();
+	private Set<ImportError> importErrors = new LinkedHashSet<>();
+	private List<RowParsedListener> rowParsedListeners = new ArrayList<>();
 
 	public SimpleImportProcessor()
 	{
@@ -73,6 +73,9 @@ public abstract class SimpleImportProcessor<T> implements ImportProcessor<T>
 	@Override
 	public void parse(final String fileName, final InputStream stream) throws ParsingFailedException
 	{
+		rows = new LinkedHashSet<>();
+		items = new LinkedHashSet<>();
+		importErrors = new LinkedHashSet<>();
 		this.fileName = fileName;
 		parseFile(stream);
 		IOUtils.closeQuietly(stream);
