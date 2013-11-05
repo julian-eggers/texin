@@ -1,12 +1,13 @@
 package com.itelg.texin.in.parser;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import au.com.bytecode.opencsv.CSVReader;
+import org.apache.commons.io.IOUtils;
 
 import com.itelg.texin.domain.Cell;
 import com.itelg.texin.domain.Row;
@@ -29,13 +30,15 @@ public class CsvFileParser extends AbstractFileParser
 
 		try {
 
-			CSVReader reader = new CSVReader(new InputStreamReader(stream), cellDelimeter.charAt(0));
-			String[] cells;
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			String line;
 			String header[] = null;
 			int rowNumber = 0;
 
-			while ((cells = reader.readNext()) != null)
+			while ((line = reader.readLine()) != null)
 			{
+				String[] cells = line.split(cellDelimeter, -1);
+
 				if (rowNumber == 0)
 				{
 					header = cells;
@@ -54,6 +57,9 @@ public class CsvFileParser extends AbstractFileParser
 						}
 					}
 
+
+					// Check if any row-listener is registered
+					// Otherwise add current row to row-set
 					if (listeners != null && listeners.isEmpty() == false)
 					{
 						for (RowParsedListener listener : listeners)
@@ -70,7 +76,7 @@ public class CsvFileParser extends AbstractFileParser
 				rowNumber++;
 			}
 
-			reader.close();
+			IOUtils.closeQuietly(reader);
 
 		} catch (IOException e) {
 
