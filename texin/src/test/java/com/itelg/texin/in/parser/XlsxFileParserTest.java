@@ -1,7 +1,6 @@
 package com.itelg.texin.in.parser;
 
 import java.io.InputStream;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +10,8 @@ import com.itelg.texin.domain.exception.ParsingFailedException;
 
 public class XlsxFileParserTest
 {
+	private Integer parsedLines = 0;
+
 	@Test
 	public void testApplies()
 	{
@@ -23,25 +24,18 @@ public class XlsxFileParserTest
 	public void testParse() throws ParsingFailedException
 	{
 		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.xlsx");
-		Set<Row> rows = new XlsxFileParser().parse(stream);
-		Assert.assertEquals(1, rows.size());
-		Assert.assertEquals(5, rows.iterator().next().getCells().size());
-	}
+		FileParser parser = new XlsxFileParser();
 
-	@Test
-	public void testParseWithListeners() throws ParsingFailedException
-	{
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.xlsx");
-		FileParser fileParser = new XlsxFileParser();
-		fileParser.addRowParsedListener(new RowParsedListener()
+		parser.setRowParsedListener(new RowParsedListener()
 		{
 			@Override
 			public void parsed(final Row row)
 			{
+				parsedLines++;
 				System.out.println("Listener: " + row.getCells().iterator().next().getStringValue());
 			}
 		});
-		Set<Row> rows = fileParser.parse(stream);
-		Assert.assertEquals(0, rows.size());
+		parser.parse(stream);
+		Assert.assertEquals(1, parsedLines, 0.1);
 	}
 }

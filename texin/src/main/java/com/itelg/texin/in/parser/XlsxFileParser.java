@@ -1,9 +1,8 @@
 package com.itelg.texin.in.parser;
 
 import java.io.InputStream;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -21,10 +20,8 @@ public class XlsxFileParser extends AbstractFileParser
 	}
 
 	@Override
-	public Set<Row> parse(final InputStream stream) throws ParsingFailedException
+	public void parse(final InputStream stream) throws ParsingFailedException
 	{
-		Set<Row> rows = new LinkedHashSet<>();
-
 		try {
 
 			XSSFWorkbook workbook = new XSSFWorkbook(stream);
@@ -109,24 +106,16 @@ public class XlsxFileParser extends AbstractFileParser
 					row.addCell(new Cell(row, (column + 1), cellHeader, cellValue));
 				}
 
-				if (listeners != null && listeners.isEmpty() == false)
-				{
-					for (RowParsedListener listener : listeners)
-					{
-						listener.parsed(row);
-					}
-
-				} else {
-
-					rows.add(row);
-				}
+				rowParsedListener.parsed(row);
 			}
 
 		} catch (Exception e) {
 
 			throw new ParsingFailedException(e.getMessage());
-		}
 
-		return rows;
+		} finally {
+
+			IOUtils.closeQuietly(stream);
+		}
 	}
 }

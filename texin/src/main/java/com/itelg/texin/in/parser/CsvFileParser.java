@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 
@@ -24,13 +22,13 @@ public class CsvFileParser extends AbstractFileParser
 	}
 
 	@Override
-	public Set<Row> parse(final InputStream stream) throws ParsingFailedException
+	public void parse(final InputStream stream) throws ParsingFailedException
 	{
-		Set<Row> rows = new LinkedHashSet<Row>();
+		BufferedReader reader = null;
 
 		try {
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			reader = new BufferedReader(new InputStreamReader(stream));
 			String line;
 			String header[] = null;
 			int rowNumber = 0;
@@ -57,33 +55,21 @@ public class CsvFileParser extends AbstractFileParser
 						}
 					}
 
-
-					// Check if any row-listener is registered
-					// Otherwise add current row to row-set
-					if (listeners != null && listeners.isEmpty() == false)
-					{
-						for (RowParsedListener listener : listeners)
-						{
-							listener.parsed(row);
-						}
-
-					} else {
-
-						rows.add(row);
-					}
+					rowParsedListener.parsed(row);
 				}
 
 				rowNumber++;
 			}
 
-			IOUtils.closeQuietly(reader);
-
 		} catch (IOException e) {
 
 			throw new ParsingFailedException(e.getMessage());
-		}
 
-		return rows;
+		} finally {
+
+			IOUtils.closeQuietly(reader);
+			IOUtils.closeQuietly(stream);
+		}
 	}
 
 	public void setCellDelimeter(final String cellDelimeter)

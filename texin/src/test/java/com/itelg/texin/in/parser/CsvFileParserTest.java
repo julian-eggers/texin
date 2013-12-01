@@ -1,7 +1,6 @@
 package com.itelg.texin.in.parser;
 
 import java.io.InputStream;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +10,8 @@ import com.itelg.texin.domain.exception.ParsingFailedException;
 
 public class CsvFileParserTest
 {
+	private Integer parsedLines = 0;
+
 	@Test
 	public void testApplies()
 	{
@@ -23,25 +24,18 @@ public class CsvFileParserTest
 	public void testParse() throws ParsingFailedException
 	{
 		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv");
-		Set<Row> rows = new CsvFileParser().parse(stream);
-		Assert.assertEquals(2, rows.size());
-		Assert.assertEquals(6, rows.iterator().next().getCells().size());
-	}
+		FileParser parser = new CsvFileParser();
 
-	@Test
-	public void testParseWithListeners() throws ParsingFailedException
-	{
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv");
-		FileParser csvFileParser = new CsvFileParser();
-		csvFileParser.addRowParsedListener(new RowParsedListener()
+		parser.setRowParsedListener(new RowParsedListener()
 		{
 			@Override
 			public void parsed(final Row row)
 			{
+				parsedLines++;
 				System.out.println("Listener: " + row.getCells().iterator().next().getStringValue());
 			}
 		});
-		Set<Row> rows = csvFileParser.parse(stream);
-		Assert.assertEquals(0, rows.size());
+		parser.parse(stream);
+		Assert.assertEquals(2, parsedLines, 0.1);
 	}
 }

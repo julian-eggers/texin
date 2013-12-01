@@ -1,30 +1,12 @@
 package com.itelg.texin.in.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 public abstract class AbstractFileParser implements FileParser
 {
-	protected List<RowParsedListener> listeners;
+	protected RowParsedListener rowParsedListener;
 
 	@Override
-	public void addRowParsedListener(final RowParsedListener listener)
+	public void setRowParsedListener(RowParsedListener rowParsedListener)
 	{
-		if (listeners == null)
-		{
-			listeners = new ArrayList<>();
-		}
-
-		listeners.add(listener);
-	}
-
-	@Override
-	public void addRowParsedListeners(final List<RowParsedListener> listeners)
-	{
-		for (RowParsedListener rowParsedListener : listeners)
-		{
-			addRowParsedListener(rowParsedListener);
-		}
+		this.rowParsedListener = rowParsedListener;
 	}
 }
