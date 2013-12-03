@@ -33,7 +33,7 @@ public abstract class AbstractImportProcessor
 		fileParsers.put(fileParser.getClass().getCanonicalName(), fileParser);
 	}
 
-	protected void parse(final String fileName, final InputStream stream) throws ParsingFailedException, NoParserAppliedException
+	public void parse(final String fileName, final InputStream stream) throws ParsingFailedException, NoParserAppliedException
 	{
 		this.fileName = fileName;
 		parseFile(stream);
