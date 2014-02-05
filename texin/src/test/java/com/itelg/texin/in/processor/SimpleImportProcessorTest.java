@@ -19,6 +19,7 @@ public class SimpleImportProcessorTest
 		{
 			TestObject testObject = new TestObject();
 			testObject.setColumn1(row.getCells().iterator().next().getStringValue());
+			testObject.setRowId(row.getNumber());
 			addItem(testObject);
 		}
 	}
@@ -26,6 +27,7 @@ public class SimpleImportProcessorTest
 	private class TestObject
 	{
 		private String column1;
+		private Integer rowId;
 
 		public String getColumn1()
 		{
@@ -35,6 +37,16 @@ public class SimpleImportProcessorTest
 		public void setColumn1(final String column1)
 		{
 			this.column1 = column1;
+		}
+
+		public Integer getRowId()
+		{
+			return rowId;
+		}
+
+		public void setRowId(Integer rowId)
+		{
+			this.rowId = rowId;
 		}
 	}
 
@@ -48,6 +60,19 @@ public class SimpleImportProcessorTest
 
 		for (TestObject testObject : processor.getItems())
 		{
+			if (testObject.getColumn1().equals("string1"))
+			{
+				Assert.assertEquals(1, testObject.getRowId(), 0);
+
+			} else if (testObject.getColumn1().equals("string2")) {
+
+				Assert.assertEquals(2, testObject.getRowId(), 0);
+
+			} else {
+
+				Assert.fail();
+			}
+
 			System.out.println("TestObject: " + testObject.getColumn1());
 		}
 	}
