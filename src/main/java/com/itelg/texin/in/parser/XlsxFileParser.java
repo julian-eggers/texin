@@ -53,17 +53,17 @@ public class XlsxFileParser extends AbstractFileParser
 
 						} else {
 
-							cellValue = cell.getNumericCellValue();
+							cellValue = Double.valueOf(cell.getNumericCellValue());
 
-							if ((double) cellValue == Math.floor((double) cellValue))
+							if (((Double) cellValue).doubleValue() == Math.floor(((Double) cellValue).doubleValue()))
 							{
-								cellValue = (long) ((double) cellValue);
+								cellValue = Long.valueOf(((Double) cellValue).longValue());
 							}
 						}
 
 					} else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN) {
 
-						cellValue = cell.getBooleanCellValue();
+						cellValue = Boolean.valueOf(cell.getBooleanCellValue());
 
 					} else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING) {
 
@@ -78,7 +78,7 @@ public class XlsxFileParser extends AbstractFileParser
 							break;
 
 							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
-							cellValue = cell.getNumericCellValue();
+							cellValue = Double.valueOf(cell.getNumericCellValue());
 							break;
 
 							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK:

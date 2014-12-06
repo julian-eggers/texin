@@ -27,7 +27,7 @@ public class SimpleImportProcessorTest
 	private class TestObject
 	{
 		private String column1;
-		private Integer rowId;
+		private int rowId;
 
 		public String getColumn1()
 		{
@@ -39,12 +39,12 @@ public class SimpleImportProcessorTest
 			this.column1 = column1;
 		}
 
-		public Integer getRowId()
+		public int getRowId()
 		{
 			return rowId;
 		}
 
-		public void setRowId(Integer rowId)
+		public void setRowId(int rowId)
 		{
 			this.rowId = rowId;
 		}

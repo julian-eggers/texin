@@ -3,11 +3,11 @@ package com.itelg.texin.domain;
 public class Cell
 {
 	private Row row;
-	private Integer columnNumber;
+	private int columnNumber;
 	private String columnHeader;
 	private Object value;
 
-	public Cell(Row row, Integer number, String header, Object value)
+	public Cell(Row row, int number, String header, Object value)
 	{
 		setRow(row);
 		setColumnNumber(number);
@@ -25,12 +25,12 @@ public class Cell
 		this.row = row;
 	}
 
-	public Integer getColumnNumber()
+	public int getColumnNumber()
 	{
 		return columnNumber;
 	}
 
-	public void setColumnNumber(Integer columnNumber)
+	public void setColumnNumber(int columnNumber)
 	{
 		this.columnNumber = columnNumber;
 	}

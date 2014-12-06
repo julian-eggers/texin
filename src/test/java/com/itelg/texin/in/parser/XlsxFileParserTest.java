@@ -10,14 +10,14 @@ import com.itelg.texin.domain.exception.ParsingFailedException;
 
 public class XlsxFileParserTest
 {
-	private Integer parsedLines = 0;
+	private int parsedLines = 0;
 
 	@Test
 	public void testApplies()
 	{
-		Assert.assertEquals(false, new XlsxFileParser().applies("test.csv"));
-		Assert.assertEquals(false, new XlsxFileParser().applies("test.txt"));
-		Assert.assertEquals(true, new XlsxFileParser().applies("test.xlsx"));
+		Assert.assertFalse(new XlsxFileParser().applies("test.csv"));
+		Assert.assertFalse(new XlsxFileParser().applies("test.txt"));
+		Assert.assertTrue(new XlsxFileParser().applies("test.xlsx"));
 	}
 
 	@Test
@@ -32,7 +32,6 @@ public class XlsxFileParserTest
 			public void parsed(final Row row)
 			{
 				parsedLines++;
-				System.out.println("Listener: " + row.getCells().iterator().next().getStringValue());
 			}
 		});
 		parser.parse(stream);

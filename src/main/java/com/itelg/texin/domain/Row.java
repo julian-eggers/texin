@@ -7,20 +7,20 @@ import java.util.Set;
 
 public class Row
 {
-	private Integer number;
+	private int number;
 	private Set<Cell> cells = new LinkedHashSet<>();
 
-	public Row(final Integer number)
+	public Row(final int number)
 	{
 		setNumber(number);
 	}
 
-	public Integer getNumber()
+	public int getNumber()
 	{
 		return number;
 	}
 
-	public void setNumber(final Integer number)
+	public void setNumber(final int number)
 	{
 		this.number = number;
 	}
