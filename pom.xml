@@ -35,7 +35,7 @@
 		<repository>
 			<id>aws-release</id>
 			<name>AWS Release Repository</name>
-			<url>s3://julian-eggers-maven-repository/release</url>
+			<url>s3://mvnrepo.itelg.com/release</url>
 		</repository>
 	</distributionManagement>
 
