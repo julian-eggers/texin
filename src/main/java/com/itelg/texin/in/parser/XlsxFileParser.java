@@ -22,9 +22,11 @@ public class XlsxFileParser extends AbstractFileParser
 	@Override
 	public void parse(final InputStream stream) throws ParsingFailedException
 	{
-		try {
-
-			XSSFWorkbook workbook = new XSSFWorkbook(stream);
+		XSSFWorkbook workbook = null;
+		
+		try
+		{
+			workbook = new XSSFWorkbook(stream);
 			XSSFSheet sheet = workbook.getSheetAt(0);
 
 			for (org.apache.poi.ss.usermodel.Row excelRow : sheet)
@@ -41,7 +43,6 @@ public class XlsxFileParser extends AbstractFileParser
 					org.apache.poi.ss.usermodel.Cell cell = excelRow.getCell(column, org.apache.poi.ss.usermodel.Row.CREATE_NULL_AS_BLANK);
 					String cellHeader = sheet.getRow(0).getCell(cell.getColumnIndex()).getStringCellValue().trim();
 
-
 					// Detect cell-type
 					Object cellValue;
 
@@ -50,9 +51,9 @@ public class XlsxFileParser extends AbstractFileParser
 						if (DateUtil.isCellDateFormatted(cell))
 						{
 							cellValue = cell.getDateCellValue();
-
-						} else {
-
+						}
+						else
+						{
 							cellValue = Double.valueOf(cell.getNumericCellValue());
 
 							if (((Double) cellValue).doubleValue() == Math.floor(((Double) cellValue).doubleValue()))
@@ -60,45 +61,45 @@ public class XlsxFileParser extends AbstractFileParser
 								cellValue = Long.valueOf(((Double) cellValue).longValue());
 							}
 						}
-
-					} else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN) {
-
+					}
+					else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN)
+					{
 						cellValue = Boolean.valueOf(cell.getBooleanCellValue());
-
-					} else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING) {
-
+					}
+					else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING)
+					{
 						cellValue = cell.getStringCellValue().trim();
-
-					} else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_FORMULA) {
-
+					}
+					else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_FORMULA)
+					{
 						switch (cell.getCachedFormulaResultType())
 						{
-							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
+						case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
 							cellValue = Boolean.toString(cell.getBooleanCellValue());
 							break;
 
-							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
+						case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
 							cellValue = Double.valueOf(cell.getNumericCellValue());
 							break;
 
-							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK:
+						case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK:
 							cellValue = "";
 							break;
 
-							default:
+						default:
+						{
+							if (cell.getHyperlink() != null)
 							{
-								if (cell.getHyperlink() != null)
-								{
-									cellValue = cell.getHyperlink().getAddress();
-									break;
-								}
-
-								cellValue = cell.toString();
+								cellValue = cell.getHyperlink().getAddress();
+								break;
 							}
+							cellValue = cell.toString();
+						}
 						}
 
-					} else {
-
+					}
+					else
+					{
 						cell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING);
 						cellValue = cell.getStringCellValue().trim();
 					}
@@ -108,14 +109,15 @@ public class XlsxFileParser extends AbstractFileParser
 
 				rowParsedListener.parsed(row);
 			}
-
-		} catch (Exception e) {
-
+		}
+		catch (Exception e)
+		{
 			throw new ParsingFailedException(e.getMessage());
-
-		} finally {
-
+		}
+		finally
+		{
 			IOUtils.closeQuietly(stream);
+			IOUtils.closeQuietly(workbook);
 		}
 	}
 }
