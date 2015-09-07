@@ -23,6 +23,7 @@ public class XlsxFileParser extends AbstractFileParser
 	public void parse(final InputStream stream) throws ParsingFailedException
 	{
 		XSSFWorkbook workbook = null;
+		int rowNumber = 0;
 
 		try
 		{
@@ -36,7 +37,8 @@ public class XlsxFileParser extends AbstractFileParser
 					continue;
 				}
 
-				Row row = new Row(excelRow.getRowNum() + 1);
+				rowNumber = excelRow.getRowNum() + 1;
+				Row row = new Row(rowNumber);
 
 				for (int column = 0; column < excelRow.getLastCellNum(); column++)
 				{
@@ -111,7 +113,7 @@ public class XlsxFileParser extends AbstractFileParser
 		}
 		catch (Exception e)
 		{
-			throw new ParsingFailedException(e);
+			throw new ParsingFailedException(rowNumber, e);
 		}
 		finally
 		{

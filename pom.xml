@@ -3,7 +3,7 @@
 	<groupId>com.itelg</groupId>
 	<artifactId>texin</artifactId>
 	<name>texin</name>
-	<version>0.2.8-RELEASE</version>
+	<version>0.2.9-RELEASE</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

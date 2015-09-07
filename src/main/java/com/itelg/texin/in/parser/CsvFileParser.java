@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.apache.commons.io.IOUtils;
 
@@ -24,16 +25,18 @@ public class CsvFileParser extends AbstractFileParser
 	@Override
 	public void parse(final InputStream stream) throws ParsingFailedException
 	{
-		BufferedReader reader = null;
-
+		Reader inputStreamReader = null;
+		BufferedReader bufferedReader = null;
+		int rowNumber = 0;
+		
 		try
 		{
-			reader = new BufferedReader(new InputStreamReader(stream));
+			inputStreamReader = new InputStreamReader(stream);
+			bufferedReader = new BufferedReader(inputStreamReader);
 			String line;
 			String header[] = null;
-			int rowNumber = 0;
 
-			while ((line = reader.readLine()) != null)
+			while ((line = bufferedReader.readLine()) != null)
 			{
 				String[] cells = line.split(cellDelimeter, -1);
 
@@ -63,12 +66,13 @@ public class CsvFileParser extends AbstractFileParser
 		}
 		catch (IOException e)
 		{
-			throw new ParsingFailedException(e);
+			throw new ParsingFailedException(rowNumber, e);
 		}
 		finally
 		{
-			IOUtils.closeQuietly(reader);
 			IOUtils.closeQuietly(stream);
+			IOUtils.closeQuietly(inputStreamReader);
+			IOUtils.closeQuietly(bufferedReader);
 		}
 	}
 
