@@ -26,8 +26,8 @@ public class CsvFileParser extends AbstractFileParser
 	{
 		BufferedReader reader = null;
 
-		try {
-
+		try
+		{
 			reader = new BufferedReader(new InputStreamReader(stream));
 			String line;
 			String header[] = null;
@@ -40,9 +40,9 @@ public class CsvFileParser extends AbstractFileParser
 				if (rowNumber == 0)
 				{
 					header = cells;
-
-				} else {
-
+				}
+				else
+				{
 					Row row = new Row(rowNumber);
 
 					if (cells.length > 0)
@@ -60,13 +60,13 @@ public class CsvFileParser extends AbstractFileParser
 
 				rowNumber++;
 			}
-
-		} catch (IOException e) {
-
-			throw new ParsingFailedException(e.getMessage());
-
-		} finally {
-
+		}
+		catch (IOException e)
+		{
+			throw new ParsingFailedException(e);
+		}
+		finally
+		{
 			IOUtils.closeQuietly(reader);
 			IOUtils.closeQuietly(stream);
 		}

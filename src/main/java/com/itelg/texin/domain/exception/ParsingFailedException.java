@@ -4,8 +4,8 @@ public class ParsingFailedException extends Exception
 {
 	private static final long serialVersionUID = 6802209096277301767L;
 
-	public ParsingFailedException(final String message)
+	public ParsingFailedException(Throwable e)
 	{
-		super(message);
+		super(e);
 	}
 }

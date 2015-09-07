@@ -33,7 +33,7 @@ public abstract class SimpleImportProcessor<T> extends AbstractImportProcessor
 			}
 		}
 
-		throw new NoParserAppliedException();
+		throw new NoParserAppliedException("No parser found for " + getFileName());
 	}
 
 	private class SimpleRowParsedListener implements RowParsedListener

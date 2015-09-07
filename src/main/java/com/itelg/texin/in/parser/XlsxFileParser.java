@@ -23,7 +23,7 @@ public class XlsxFileParser extends AbstractFileParser
 	public void parse(final InputStream stream) throws ParsingFailedException
 	{
 		XSSFWorkbook workbook = null;
-		
+
 		try
 		{
 			workbook = new XSSFWorkbook(stream);
@@ -74,29 +74,28 @@ public class XlsxFileParser extends AbstractFileParser
 					{
 						switch (cell.getCachedFormulaResultType())
 						{
-						case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
-							cellValue = Boolean.toString(cell.getBooleanCellValue());
-							break;
-
-						case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
-							cellValue = Double.valueOf(cell.getNumericCellValue());
-							break;
-
-						case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK:
-							cellValue = "";
-							break;
-
-						default:
-						{
-							if (cell.getHyperlink() != null)
-							{
-								cellValue = cell.getHyperlink().getAddress();
+							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
+								cellValue = Boolean.toString(cell.getBooleanCellValue());
 								break;
-							}
-							cellValue = cell.toString();
-						}
-						}
 
+							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
+								cellValue = Double.valueOf(cell.getNumericCellValue());
+								break;
+
+							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK:
+								cellValue = "";
+								break;
+
+							default:
+							{
+								if (cell.getHyperlink() != null)
+								{
+									cellValue = cell.getHyperlink().getAddress();
+									break;
+								}
+								cellValue = cell.toString();
+							}
+						}
 					}
 					else
 					{
@@ -112,7 +111,7 @@ public class XlsxFileParser extends AbstractFileParser
 		}
 		catch (Exception e)
 		{
-			throw new ParsingFailedException(e.getMessage());
+			throw new ParsingFailedException(e);
 		}
 		finally
 		{
