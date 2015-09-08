@@ -3,11 +3,12 @@
 	<groupId>com.itelg</groupId>
 	<artifactId>texin</artifactId>
 	<name>texin</name>
-	<version>0.2.10-RELEASE</version>
+	<version>0.2.11-RELEASE</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<poi.version>3.12</poi.version>
 	</properties>
 
 	<scm>
@@ -122,8 +123,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.11</version>
+			<version>${poi.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
