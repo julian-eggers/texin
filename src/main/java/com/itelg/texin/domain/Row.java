@@ -51,4 +51,10 @@ public class Row
 
 		return cellMap;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Row [number=" + number + ", cells=" + cells + "]";
+	}
 }
