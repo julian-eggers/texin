@@ -8,16 +8,10 @@ With Texin you have to implement only one reader to process different spreadshee
 
 #### Maven
 ```xml
-<repositories>
-	<repository>
-		<id>itelg</id>
-		<url>http://mvnrepo.itelg.com/release</url>
-	</repository>
-</repositories>
 <dependencies>
 	<dependency>
 		<groupId>com.itelg</groupId>
 		<artifactId>texin</artifactId>
-		<version>0.2.11-RELEASE</version>
+		<version>0.3.0-RELEASE</version>
 	</dependency>
 </dependencies>
