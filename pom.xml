@@ -5,7 +5,7 @@
 	<name>texin</name>
 	<description>With Texin you have to implement only one reader to process different spreadsheet-files (XLSX, CSV, TXT)</description>
 	<url>https://github.com/julian-eggers/texin</url>
-	<version>0.3.0-RELEASE</version>
+	<version>0.3.1-RELEASE</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

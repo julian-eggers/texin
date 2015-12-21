@@ -74,4 +74,10 @@ public class Cell
 	{
 		return Double.valueOf(getStringValue());
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Cell [columnNumber=" + columnNumber + ", columnHeader=" + columnHeader + ", value=" + value + "]";
+	}
 }

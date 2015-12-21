@@ -14,4 +14,10 @@ public class ImportErrorTest
 		Assert.assertEquals(1, cell.getRow().getNumber(), 0.0);
 		Assert.assertEquals("error", importError.getError());
 	}
+	
+	@Test
+	public void testToString()
+	{
+		Assert.assertTrue(new ImportError(null, "error").toString().startsWith("ImportError"));
+	}
 }

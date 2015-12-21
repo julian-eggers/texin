@@ -11,4 +11,10 @@ public class RowTest
 		Row row = new Row(1);
 		Assert.assertEquals(1, row.getNumber(), 0);
 	}
+	
+	@Test
+	public void testToString()
+	{
+		Assert.assertTrue(new Row(1).toString().startsWith("Row"));
+	}
 }

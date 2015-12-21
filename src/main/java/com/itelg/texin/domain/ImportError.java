@@ -30,4 +30,10 @@ public class ImportError
 	{
 		this.error = error;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "ImportError [cell=" + cell + ", error=" + error + "]";
+	}
 }

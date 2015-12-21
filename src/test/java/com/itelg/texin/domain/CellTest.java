@@ -14,4 +14,10 @@ public class CellTest
 		Assert.assertEquals("test", cell.getColumnHeader());
 		Assert.assertEquals("value", cell.getStringValue());
 	}
+	
+	@Test
+	public void testToString()
+	{
+		Assert.assertTrue(new Cell(null, 1, "key", "value").toString().startsWith("Cell"));
+	}
 }
