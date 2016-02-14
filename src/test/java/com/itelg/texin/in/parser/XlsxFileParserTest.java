@@ -1,5 +1,6 @@
 package com.itelg.texin.in.parser;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Assert;
@@ -21,20 +22,22 @@ public class XlsxFileParserTest
 	}
 
 	@Test
-	public void testParse() throws ParsingFailedException
+	public void testParse() throws ParsingFailedException, IOException
 	{
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.xlsx");
-		FileParser parser = new XlsxFileParser();
-
-		parser.setRowParsedListener(new RowParsedListener()
+		try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.xlsx"))
 		{
-			@Override
-			public void parsed(final Row row)
+			FileParser parser = new XlsxFileParser();
+
+			parser.setRowParsedListener(new RowParsedListener()
 			{
-				parsedLines++;
-			}
-		});
-		parser.parse(stream);
-		Assert.assertEquals(1, parsedLines, 0.1);
+				@Override
+				public void parsed(final Row row)
+				{
+					parsedLines++;
+				}
+			});
+			parser.parse(stream);
+			Assert.assertEquals(1, parsedLines, 0.1);
+		}
 	}
 }

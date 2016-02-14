@@ -5,12 +5,12 @@
   <name>texin</name>
   <description>With Texin you have to implement only one reader to process different spreadsheet-files (XLSX, CSV, TXT)</description>
   <url>https://github.com/julian-eggers/texin</url>
-  <version>0.3.2-RELEASE</version>
+  <version>0.3.3-RELEASE</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
-    <poi.version>3.12</poi.version>
+    <poi.version>3.13</poi.version>
     <cobertura.version>2.7</cobertura.version>
     <coveralls.version>4.1.0</coveralls.version>
     <powermock.version>1.6.3</powermock.version>
@@ -168,7 +168,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.13</version>
+      <version>1.7.16</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -198,12 +198,6 @@
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-easymock</artifactId>
       <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert</artifactId>
-      <version>1.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

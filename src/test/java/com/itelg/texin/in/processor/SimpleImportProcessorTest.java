@@ -1,5 +1,6 @@
 package com.itelg.texin.in.processor;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Assert;
@@ -51,51 +52,57 @@ public class SimpleImportProcessorTest
 	}
 
 	@Test
-	public void testValidProcesser() throws ParsingFailedException, NoParserAppliedException
+	public void testValidProcesser() throws ParsingFailedException, NoParserAppliedException, IOException
 	{
-		ImportProcessor processor = new ImportProcessor();
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv");
-		processor.parse("testfile.csv", stream);
-		Assert.assertEquals(2, processor.getItems().size());
-
-		for (TestObject testObject : processor.getItems())
+		try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv"))
 		{
-			if (testObject.getColumn1().equals("string1"))
+			ImportProcessor processor = new ImportProcessor();
+			processor.parse("testfile.csv", stream);
+			Assert.assertEquals(2, processor.getItems().size());
+
+			for (TestObject testObject : processor.getItems())
 			{
-				Assert.assertEquals(1, testObject.getRowId(), 0);
+				if (testObject.getColumn1().equals("string1"))
+				{
+					Assert.assertEquals(1, testObject.getRowId(), 0);
+				}
+				else if (testObject.getColumn1().equals("string2"))
+				{
+					Assert.assertEquals(2, testObject.getRowId(), 0);
+				}
+				else
+				{
+					Assert.fail();
+				}
 
-			} else if (testObject.getColumn1().equals("string2")) {
-
-				Assert.assertEquals(2, testObject.getRowId(), 0);
-
-			} else {
-
-				Assert.fail();
+				System.out.println("TestObject: " + testObject.getColumn1());
 			}
-
-			System.out.println("TestObject: " + testObject.getColumn1());
 		}
 	}
 
 	@Test
-	public void testConfiguredFileParser() throws ParsingFailedException, NoParserAppliedException
+	public void testConfiguredFileParser() throws ParsingFailedException, NoParserAppliedException, IOException
 	{
-		ImportProcessor processor = new ImportProcessor();
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile2.csv");
+		try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile2.csv"))
+		{
+			ImportProcessor processor = new ImportProcessor();
 
-		CsvFileParser fileParser = new CsvFileParser();
-		fileParser.setCellDelimeter("-");
-		processor.addFileParser(fileParser);
+			CsvFileParser fileParser = new CsvFileParser();
+			fileParser.setCellDelimeter("-");
+			processor.addFileParser(fileParser);
 
-		processor.parse("testfile2.csv", stream);
-		Assert.assertEquals(1, processor.getItems().size());
+			processor.parse("testfile2.csv", stream);
+			Assert.assertEquals(1, processor.getItems().size());
+		}
 	}
 
 	@Test(expected = NoParserAppliedException.class)
-	public void testNoParsedAppliedException() throws ParsingFailedException, NoParserAppliedException
+	public void testNoParsedAppliedException() throws ParsingFailedException, NoParserAppliedException, IOException
 	{
-		ImportProcessor processor = new ImportProcessor();
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv");
-		processor.parse("testfile.pdf", stream);
+		try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv"))
+		{
+			ImportProcessor processor = new ImportProcessor();
+			processor.parse("testfile.pdf", stream);
+		}
 	}
 }

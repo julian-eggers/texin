@@ -1,5 +1,6 @@
 package com.itelg.texin.in.parser;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Assert;
@@ -21,20 +22,22 @@ public class TxtFileParserTest
 	}
 
 	@Test
-	public void testParse() throws ParsingFailedException
+	public void testParse() throws ParsingFailedException, IOException
 	{
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.txt");
-		FileParser parser = new TxtFileParser();
-
-		parser.setRowParsedListener(new RowParsedListener()
+		try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.txt"))
 		{
-			@Override
-			public void parsed(final Row row)
+			FileParser parser = new TxtFileParser();
+
+			parser.setRowParsedListener(new RowParsedListener()
 			{
-				parsedLines++;
-			}
-		});
-		parser.parse(stream);
-		Assert.assertEquals(2, parsedLines, 0.1);
+				@Override
+				public void parsed(final Row row)
+				{
+					parsedLines++;
+				}
+			});
+			parser.parse(stream);
+			Assert.assertEquals(2, parsedLines, 0.1);
+		}
 	}
 }

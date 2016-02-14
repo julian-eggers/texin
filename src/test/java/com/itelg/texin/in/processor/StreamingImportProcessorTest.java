@@ -1,5 +1,6 @@
 package com.itelg.texin.in.processor;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Assert;
@@ -23,13 +24,15 @@ public class StreamingImportProcessorTest
 	}
 
 	@Test
-	public void testValidProcesser() throws ParsingFailedException, NoParserAppliedException
+	public void testValidProcesser() throws ParsingFailedException, NoParserAppliedException, IOException
 	{
-		ImportProcessor processor = new ImportProcessor();
-		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv");
+		try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv"))
+		{
+			ImportProcessor processor = new ImportProcessor();
 
-		rows = 0;
-		processor.parse("testfile.csv", stream);
-		Assert.assertEquals(2, rows);
+			rows = 0;
+			processor.parse("testfile.csv", stream);
+			Assert.assertEquals(2, rows);
+		}
 	}
 }
