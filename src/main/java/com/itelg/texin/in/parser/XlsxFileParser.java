@@ -2,8 +2,9 @@ package com.itelg.texin.in.parser;
 
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -13,112 +14,99 @@ import com.itelg.texin.domain.exception.ParsingFailedException;
 
 public class XlsxFileParser extends AbstractFileParser
 {
-	@Override
-	public boolean applies(final String fileName)
-	{
-		return fileName.toLowerCase().endsWith(".xlsx");
-	}
+    @Override
+    public boolean applies(final String fileName)
+    {
+        return fileName.toLowerCase().endsWith(".xlsx");
+    }
 
-	@Override
-	public void parse(final InputStream stream) throws ParsingFailedException
-	{
-		XSSFWorkbook workbook = null;
-		int rowNumber = 0;
+    @Override
+    public void parse(final InputStream stream) throws ParsingFailedException
+    {
+        int rowNumber = 0;
 
-		try
-		{
-			workbook = new XSSFWorkbook(stream);
-			XSSFSheet sheet = workbook.getSheetAt(0);
+        try (XSSFWorkbook workbook = new XSSFWorkbook(stream))
+        {
+            XSSFSheet sheet = workbook.getSheetAt(0);
 
-			for (org.apache.poi.ss.usermodel.Row excelRow : sheet)
-			{
-				if (excelRow.getRowNum() == 0)
-				{
-					continue;
-				}
+            for (org.apache.poi.ss.usermodel.Row excelRow : sheet)
+            {
+                if (excelRow.getRowNum() == 0)
+                {
+                    continue;
+                }
 
-				rowNumber = excelRow.getRowNum() + 1;
-				Row row = new Row(rowNumber);
+                rowNumber = excelRow.getRowNum() + 1;
+                Row row = new Row(rowNumber);
 
-				for (int column = 0; column < excelRow.getLastCellNum(); column++)
-				{
-					org.apache.poi.ss.usermodel.Cell cell = excelRow.getCell(column, org.apache.poi.ss.usermodel.Row.CREATE_NULL_AS_BLANK);
-					String cellHeader = sheet.getRow(0).getCell(cell.getColumnIndex()).getStringCellValue().trim();
+                for (int column = 0; column < excelRow.getLastCellNum(); column++)
+                {
+                    org.apache.poi.ss.usermodel.Cell cell = excelRow.getCell(column, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                    String cellHeader = sheet.getRow(0).getCell(cell.getColumnIndex()).getStringCellValue().trim();
 
-					// Detect cell-type
-					Object cellValue;
+                    Object cellValue = getCellValue(cell);
 
-					if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC)
-					{
-						if (DateUtil.isCellDateFormatted(cell))
-						{
-							cellValue = cell.getDateCellValue();
-						}
-						else
-						{
-							cellValue = Double.valueOf(cell.getNumericCellValue());
+                    row.addCell(new Cell(row, (column + 1), cellHeader, cellValue));
+                }
 
-							if (((Double) cellValue).doubleValue() == Math.floor(((Double) cellValue).doubleValue()))
-							{
-								cellValue = Long.valueOf(((Double) cellValue).longValue());
-							}
-						}
-					}
-					else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN)
-					{
-						cellValue = Boolean.valueOf(cell.getBooleanCellValue());
-					}
-					else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING)
-					{
-						cellValue = cell.getStringCellValue().trim();
-					}
-					else if (cell.getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_FORMULA)
-					{
-						switch (cell.getCachedFormulaResultType())
-						{
-							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
-								cellValue = Boolean.toString(cell.getBooleanCellValue());
-								break;
+                rowParsedListener.parsed(row);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new ParsingFailedException(rowNumber, e);
+        }
+    }
 
-							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
-								cellValue = Double.valueOf(cell.getNumericCellValue());
-								break;
+    private static Object getCellValue(org.apache.poi.ss.usermodel.Cell cell)
+    {
+        if (cell.getCellType() == CellType.NUMERIC)
+        {
+            if (DateUtil.isCellDateFormatted(cell))
+            {
+                return cell.getDateCellValue();
+            }
 
-							case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK:
-								cellValue = "";
-								break;
+            Double cellValue = Double.valueOf(cell.getNumericCellValue());
+            if (cellValue.doubleValue() == Math.floor(cellValue.doubleValue()))
+            {
+                return Long.valueOf(cellValue.longValue());
+            }
+            return cellValue;
+        }
+        else if (cell.getCellType() == CellType.BOOLEAN)
+        {
+            return Boolean.valueOf(cell.getBooleanCellValue());
+        }
+        else if (cell.getCellType() == CellType.STRING)
+        {
+            return cell.getStringCellValue().trim();
+        }
+        else if (cell.getCellType() == CellType.FORMULA)
+        {
+            switch (cell.getCachedFormulaResultType())
+            {
+                case BOOLEAN:
+                    return Boolean.toString(cell.getBooleanCellValue());
 
-							default:
-							{
-								if (cell.getHyperlink() != null)
-								{
-									cellValue = cell.getHyperlink().getAddress();
-									break;
-								}
-								cellValue = cell.toString();
-							}
-						}
-					}
-					else
-					{
-						cell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING);
-						cellValue = cell.getStringCellValue().trim();
-					}
+                case NUMERIC:
+                    return Double.valueOf(cell.getNumericCellValue());
 
-					row.addCell(new Cell(row, (column + 1), cellHeader, cellValue));
-				}
+                case BLANK:
+                    return "";
 
-				rowParsedListener.parsed(row);
-			}
-		}
-		catch (Exception e)
-		{
-			throw new ParsingFailedException(rowNumber, e);
-		}
-		finally
-		{
-			IOUtils.closeQuietly(stream);
-			IOUtils.closeQuietly(workbook);
-		}
-	}
+                default:
+                    if (cell.getHyperlink() != null)
+                    {
+                        return cell.getHyperlink().getAddress();
+                    }
+                    return cell.toString();
+            }
+        }
+        else
+        {
+            cell.setCellType(CellType.STRING);
+            return cell.getStringCellValue().trim();
+        }
+    }
 }

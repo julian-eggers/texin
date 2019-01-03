@@ -6,78 +6,66 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.apache.commons.io.IOUtils;
-
 import com.itelg.texin.domain.Cell;
 import com.itelg.texin.domain.Row;
 import com.itelg.texin.domain.exception.ParsingFailedException;
 
 public class CsvFileParser extends AbstractFileParser
 {
-	private String cellDelimeter = ";";
+    private String cellDelimeter = ";";
 
-	@Override
-	public boolean applies(final String fileName)
-	{
-		return fileName.toLowerCase().endsWith(".csv");
-	}
+    @Override
+    public boolean applies(final String fileName)
+    {
+        return fileName.toLowerCase().endsWith(".csv");
+    }
 
-	@Override
-	public void parse(final InputStream stream) throws ParsingFailedException
-	{
-		Reader inputStreamReader = null;
-		BufferedReader bufferedReader = null;
-		int rowNumber = 0;
-		
-		try
-		{
-			inputStreamReader = new InputStreamReader(stream);
-			bufferedReader = new BufferedReader(inputStreamReader);
-			String line;
-			String header[] = null;
+    @Override
+    public void parse(final InputStream stream) throws ParsingFailedException
+    {
+        int rowNumber = 0;
 
-			while ((line = bufferedReader.readLine()) != null)
-			{
-				String[] cells = line.split(cellDelimeter, -1);
+        try (Reader inputStreamReader = new InputStreamReader(stream); BufferedReader bufferedReader = new BufferedReader(inputStreamReader))
+        {
+            String line;
+            String[] header = null;
 
-				if (rowNumber == 0)
-				{
-					header = cells;
-				}
-				else
-				{
-					Row row = new Row(rowNumber);
+            while ((line = bufferedReader.readLine()) != null)
+            {
+                String[] cells = line.split(cellDelimeter, -1);
 
-					if (cells.length > 0)
-					{
-						for (int cellNumber = 0; cellNumber < cells.length; cellNumber++)
-						{
-							String cellHeader = header[cellNumber];
-							String cellValue = cells[cellNumber];
-							row.addCell(new Cell(row, (cellNumber + 1), cellHeader, cellValue));
-						}
-					}
+                if (header == null)
+                {
+                    header = cells;
+                }
+                else
+                {
+                    Row row = new Row(rowNumber);
 
-					rowParsedListener.parsed(row);
-				}
+                    if (cells.length > 0)
+                    {
+                        for (int cellNumber = 0; cellNumber < cells.length; cellNumber++)
+                        {
+                            String cellHeader = header[cellNumber];
+                            String cellValue = cells[cellNumber];
+                            row.addCell(new Cell(row, (cellNumber + 1), cellHeader, cellValue));
+                        }
+                    }
 
-				rowNumber++;
-			}
-		}
-		catch (IOException e)
-		{
-			throw new ParsingFailedException(rowNumber, e);
-		}
-		finally
-		{
-			IOUtils.closeQuietly(stream);
-			IOUtils.closeQuietly(inputStreamReader);
-			IOUtils.closeQuietly(bufferedReader);
-		}
-	}
+                    rowParsedListener.parsed(row);
+                }
 
-	public void setCellDelimeter(final String cellDelimeter)
-	{
-		this.cellDelimeter = cellDelimeter;
-	}
+                rowNumber++;
+            }
+        }
+        catch (IOException e)
+        {
+            throw new ParsingFailedException(rowNumber, e);
+        }
+    }
+
+    public void setCellDelimeter(final String cellDelimeter)
+    {
+        this.cellDelimeter = cellDelimeter;
+    }
 }

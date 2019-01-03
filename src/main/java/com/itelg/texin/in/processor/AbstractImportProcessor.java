@@ -13,36 +13,36 @@ import com.itelg.texin.in.parser.XlsxFileParser;
 
 public abstract class AbstractImportProcessor
 {
-	protected Map<String, FileParser> fileParsers = new HashMap<>();
-	private String fileName;
+    protected Map<String, FileParser> fileParsers = new HashMap<>();
+    private String fileName;
 
-	public AbstractImportProcessor()
-	{
-		addFileParser(new CsvFileParser());
-		addFileParser(new TxtFileParser());
-		addFileParser(new XlsxFileParser());
-	}
+    public AbstractImportProcessor()
+    {
+        addFileParser(new CsvFileParser());
+        addFileParser(new TxtFileParser());
+        addFileParser(new XlsxFileParser());
+    }
 
-	public void addFileParser(final FileParser fileParser)
-	{
-		if (fileParsers.containsKey(fileParser.getClass().getCanonicalName()))
-		{
-			fileParsers.remove(fileParser.getClass().getCanonicalName());
-		}
+    public void addFileParser(final FileParser fileParser)
+    {
+        if (fileParsers.containsKey(fileParser.getClass().getCanonicalName()))
+        {
+            fileParsers.remove(fileParser.getClass().getCanonicalName());
+        }
 
-		fileParsers.put(fileParser.getClass().getCanonicalName(), fileParser);
-	}
+        fileParsers.put(fileParser.getClass().getCanonicalName(), fileParser);
+    }
 
-	public void parse(final String fileName, final InputStream stream) throws ParsingFailedException, NoParserAppliedException
-	{
-		this.fileName = fileName;
-		parseFile(stream);
-	}
+    public void parse(final String currentFileName, final InputStream stream) throws ParsingFailedException, NoParserAppliedException
+    {
+        this.fileName = currentFileName;
+        parseFile(stream);
+    }
 
-	protected abstract void parseFile(InputStream stream) throws ParsingFailedException, NoParserAppliedException;
+    protected abstract void parseFile(InputStream stream) throws ParsingFailedException, NoParserAppliedException;
 
-	public String getFileName()
-	{
-		return fileName;
-	}
+    public String getFileName()
+    {
+        return fileName;
+    }
 }
