@@ -1,10 +1,11 @@
 texin
 =====
 
-[![Maven Central](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/itelg/texin/maven-metadata.xml.svg)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.itelg%22%20AND%20a%3A%22texin%22)
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/93051c8f98cf42139c36eded2c772ad0)](https://www.codacy.com/app/eggers-julian/texin)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/93051c8f98cf42139c36eded2c772ad0)](https://www.codacy.com/app/eggers-julian/texin)
-[![Build Status](https://travis-ci.org/julian-eggers/texin.svg?branch=master)](https://travis-ci.org/julian-eggers/texin)
+[![Maven Central](https://img.shields.io/maven-central/v/com.itelg/texin.svg?label=maven-central)](https://search.maven.org/artifact/com.itelg/texin)
+[![Release](https://github.com/julian-eggers/texin/actions/workflows/release.yml/badge.svg)](https://github.com/julian-eggers/texin/actions/workflows/release.yml)
+[![Nightly build](https://github.com/julian-eggers/texin/actions/workflows/nightly.yml/badge.svg)](https://github.com/julian-eggers/texin/actions/workflows/nightly.yml)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=julian-eggers_texin&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=julian-eggers_texin)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=julian-eggers_texin&metric=coverage)](https://sonarcloud.io/summary/new_code?id=julian-eggers_texin)
 
 With Texin you have to implement only one reader to process different spreadsheet-files
 

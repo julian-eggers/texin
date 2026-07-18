@@ -7,14 +7,14 @@ import static org.assertj.core.api.Assertions.fail;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.itelg.texin.domain.Row;
 import com.itelg.texin.domain.exception.NoParserAppliedException;
 import com.itelg.texin.domain.exception.ParsingFailedException;
 import com.itelg.texin.in.parser.CsvFileParser;
 
-public class SimpleImportProcessorTest
+class SimpleImportProcessorTest
 {
     private class ImportProcessor extends SimpleImportProcessor<TestObject>
     {
@@ -55,7 +55,7 @@ public class SimpleImportProcessorTest
     }
 
     @Test
-    public void testValidProcesser() throws ParsingFailedException, NoParserAppliedException, IOException
+    void testValidProcesser() throws ParsingFailedException, NoParserAppliedException, IOException
     {
         try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv"))
         {
@@ -84,7 +84,7 @@ public class SimpleImportProcessorTest
     }
 
     @Test
-    public void testConfiguredFileParser() throws ParsingFailedException, NoParserAppliedException, IOException
+    void testConfiguredFileParser() throws ParsingFailedException, NoParserAppliedException, IOException
     {
         try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile2.csv"))
         {
@@ -100,7 +100,7 @@ public class SimpleImportProcessorTest
     }
 
     @Test
-    public void testNoParsedAppliedException() throws IOException
+    void testNoParsedAppliedException() throws IOException
     {
         try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv"))
         {

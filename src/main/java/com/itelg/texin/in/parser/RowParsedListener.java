@@ -4,5 +4,5 @@ import com.itelg.texin.domain.Row;
 
 public interface RowParsedListener
 {
-	public void parsed(Row row);
+	void parsed(Row row);
 }

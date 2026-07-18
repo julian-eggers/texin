@@ -5,16 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.itelg.texin.domain.exception.ParsingFailedException;
 
-public class CsvFileParserTest
+class CsvFileParserTest
 {
     private int parsedLines = 0;
 
     @Test
-    public void testApplies()
+    void testApplies()
     {
         assertThat(new CsvFileParser().applies("test.csv")).isTrue();
         assertThat(new CsvFileParser().applies("test.txt")).isFalse();
@@ -22,7 +22,7 @@ public class CsvFileParserTest
     }
 
     @Test
-    public void testParse() throws ParsingFailedException, IOException
+    void testParse() throws ParsingFailedException, IOException
     {
         try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv"))
         {

@@ -5,13 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.itelg.texin.domain.Row;
 import com.itelg.texin.domain.exception.NoParserAppliedException;
 import com.itelg.texin.domain.exception.ParsingFailedException;
 
-public class StreamingImportProcessorTest
+class StreamingImportProcessorTest
 {
     private class ImportProcessor extends StreamingImportProcessor
     {
@@ -25,7 +25,7 @@ public class StreamingImportProcessorTest
     }
 
     @Test
-    public void testValidProcesser() throws ParsingFailedException, NoParserAppliedException, IOException
+    void testValidProcesser() throws ParsingFailedException, NoParserAppliedException, IOException
     {
         try (InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("testfile.csv"))
         {

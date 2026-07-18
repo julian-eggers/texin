@@ -25,11 +25,6 @@ public abstract class AbstractImportProcessor
 
     public void addFileParser(final FileParser fileParser)
     {
-        if (fileParsers.containsKey(fileParser.getClass().getCanonicalName()))
-        {
-            fileParsers.remove(fileParser.getClass().getCanonicalName());
-        }
-
         fileParsers.put(fileParser.getClass().getCanonicalName(), fileParser);
     }
 
