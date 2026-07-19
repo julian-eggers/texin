@@ -14,5 +14,5 @@ With Texin you have to implement only one reader to process different spreadshee
 <dependency>
   <groupId>com.itelg</groupId>
   <artifactId>texin</artifactId>
-  <version>0.5.0-RELEASE</version>
+  <version>1.0.0-RC1</version>
 </dependency>
