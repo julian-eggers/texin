@@ -3,7 +3,7 @@
 
   <groupId>com.itelg</groupId>
   <artifactId>texin</artifactId>
-  <version>1.0.0-RC1</version>
+  <version>1.0.0</version>
 
   <name>texin</name>
   <description>With Texin you have to implement only one reader to process different spreadsheet-files (XLSX, CSV, TXT)</description>
@@ -310,6 +310,9 @@
         <version>${exists-maven-plugin.version}</version>
         <configuration>
           <property>skip-deploy-to-central</property>
+          <!-- Deliberately OSSRH and not repo1.maven.org: a freshly published version shows up here
+               immediately, while the sync to repo1 lags. Checking repo1 would report "not present"
+               shortly after a release and trigger a duplicate deploy. -->
           <repository>https://oss.sonatype.org/content/repositories/releases/</repository>
         </configuration>
         <executions>
