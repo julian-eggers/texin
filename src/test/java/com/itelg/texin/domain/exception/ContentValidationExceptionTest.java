@@ -2,12 +2,12 @@ package com.itelg.texin.domain.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ContentValidationExceptionTest
+class ContentValidationExceptionTest
 {
     @Test
-    public void testConstructor()
+    void testConstructor()
     {
         assertThat(new ContentValidationException("error").getMessage()).isEqualTo("error");
     }

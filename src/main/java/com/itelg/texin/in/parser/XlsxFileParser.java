@@ -103,10 +103,13 @@ public class XlsxFileParser extends AbstractFileParser
                     return cell.toString();
             }
         }
+        else if (cell.getCellType() == CellType.BLANK)
+        {
+            return "";
+        }
         else
         {
-            cell.setCellType(CellType.STRING);
-            return cell.getStringCellValue().trim();
+            return cell.toString().trim();
         }
     }
 }
