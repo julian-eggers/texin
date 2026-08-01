@@ -1,5 +1,10 @@
 package com.itelg.texin.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Cell
 {
 	private Row row;
@@ -13,46 +18,6 @@ public class Cell
 		setColumnNumber(number);
 		setColumnHeader(header);
 		setValue(value);
-	}
-
-	public Row getRow()
-	{
-		return row;
-	}
-
-	public void setRow(Row row)
-	{
-		this.row = row;
-	}
-
-	public int getColumnNumber()
-	{
-		return columnNumber;
-	}
-
-	public void setColumnNumber(int columnNumber)
-	{
-		this.columnNumber = columnNumber;
-	}
-
-	public String getColumnHeader()
-	{
-		return columnHeader;
-	}
-
-	public void setColumnHeader(String columnHeader)
-	{
-		this.columnHeader = columnHeader;
-	}
-
-	public void setValue(Object value)
-	{
-		this.value = value;
-	}
-
-	public Object getValue()
-	{
-		return value;
 	}
 
 	public String getStringValue()

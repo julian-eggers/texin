@@ -49,6 +49,8 @@
     <slf4j-api.version>2.0.18</slf4j-api.version>
     <commons-io.version>2.22.0</commons-io.version>
     <commons-codec.version>1.22.1</commons-codec.version>
+    <!-- lombok must be pinned explicitly for the annotation-processor path -->
+    <lombok.version>1.18.46</lombok.version>
     <!-- Testing -->
     <jacoco.version>0.8.15</jacoco.version>
     <assertj.version>3.27.7</assertj.version>
@@ -85,6 +87,12 @@
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
       <version>${poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

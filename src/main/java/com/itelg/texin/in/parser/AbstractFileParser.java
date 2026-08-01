@@ -1,12 +1,9 @@
 package com.itelg.texin.in.parser;
 
+import lombok.Setter;
+
 public abstract class AbstractFileParser implements FileParser
 {
+	@Setter
 	protected RowParsedListener rowParsedListener;
-
-	@Override
-	public void setRowParsedListener(RowParsedListener rowParsedListener)
-	{
-		this.rowParsedListener = rowParsedListener;
-	}
 }

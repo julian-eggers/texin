@@ -5,6 +5,11 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Row
 {
 	private int number;
@@ -13,26 +18,6 @@ public class Row
 	public Row(final int number)
 	{
 		setNumber(number);
-	}
-
-	public int getNumber()
-	{
-		return number;
-	}
-
-	public void setNumber(final int number)
-	{
-		this.number = number;
-	}
-
-	public Set<Cell> getCells()
-	{
-		return cells;
-	}
-
-	public void setCells(final Set<Cell> cells)
-	{
-		this.cells = cells;
 	}
 
 	public void addCell(final Cell cell)

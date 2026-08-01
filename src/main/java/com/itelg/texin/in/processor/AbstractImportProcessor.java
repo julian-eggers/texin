@@ -11,9 +11,12 @@ import com.itelg.texin.in.parser.FileParser;
 import com.itelg.texin.in.parser.TxtFileParser;
 import com.itelg.texin.in.parser.XlsxFileParser;
 
+import lombok.Getter;
+
 public abstract class AbstractImportProcessor
 {
     protected Map<String, FileParser> fileParsers = new HashMap<>();
+    @Getter
     private String fileName;
 
     public AbstractImportProcessor()
@@ -36,8 +39,4 @@ public abstract class AbstractImportProcessor
 
     protected abstract void parseFile(InputStream stream) throws ParsingFailedException, NoParserAppliedException;
 
-    public String getFileName()
-    {
-        return fileName;
-    }
 }

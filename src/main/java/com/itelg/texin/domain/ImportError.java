@@ -1,5 +1,10 @@
 package com.itelg.texin.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ImportError
 {
 	private Cell cell;
@@ -9,26 +14,6 @@ public class ImportError
 	{
 		setCell(cell);
 		setError(error);
-	}
-
-	public Cell getCell()
-	{
-		return cell;
-	}
-
-	public void setCell(Cell cell)
-	{
-		this.cell = cell;
-	}
-
-	public String getError()
-	{
-		return error;
-	}
-
-	public void setError(String error)
-	{
-		this.error = error;
 	}
 
 	@Override
