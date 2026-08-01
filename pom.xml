@@ -53,6 +53,8 @@
     <jacoco.version>0.8.15</jacoco.version>
     <assertj.version>3.27.7</assertj.version>
     <junit.version>6.1.2</junit.version>
+    <!-- Explicit so Sonar reads the combined UT+IT jacoco report instead of guessing via scanner-default path conventions. -->
+    <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
   <dependencyManagement>
@@ -122,6 +124,7 @@
         <configuration>
           <release>${java.version}</release>
           <parameters>true</parameters>
+          <proc>full</proc>
         </configuration>
       </plugin>
       <plugin>
@@ -180,6 +183,7 @@
           <argLine>-Duser.timezone=Europe/Berlin</argLine>
           <systemPropertyVariables>
             <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+            <jacoco-agent.append>true</jacoco-agent.append>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -189,6 +193,10 @@
         <version>${maven-failsafe-plugin.version}</version>
         <configuration>
           <reportsDirectory>target/surefire-reports</reportsDirectory>
+          <systemPropertyVariables>
+            <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+            <jacoco-agent.append>true</jacoco-agent.append>
+          </systemPropertyVariables>
         </configuration>
         <executions>
           <execution>
@@ -227,54 +235,28 @@
               <goal>restore-instrumented-classes</goal>
             </goals>
           </execution>
+          <!--
+            default-restore-instrumented-classes above runs at its default phase (prepare-package) to keep the
+            packaged jar free of instrumented bytecode. But that means classes are back to non-instrumented by the
+            time integration-test runs (pre-integration-test/integration-test come after prepare-package/package in
+            the lifecycle) - so without re-instrumenting here, Failsafe would silently record zero IT coverage.
+          -->
           <execution>
-            <id>default-report</id>
-            <phase>prepare-package</phase>
+            <id>pre-integration-test-instrument</id>
+            <phase>pre-integration-test</phase>
             <goals>
-              <goal>report</goal>
+              <goal>instrument</goal>
             </goals>
-            <configuration>
-              <dataFile>target/jacoco-ut.exec</dataFile>
-              <outputDirectory>target/jacoco-ut</outputDirectory>
-            </configuration>
           </execution>
           <execution>
-            <id>integration-test-report</id>
+            <id>post-integration-test-restore</id>
             <phase>post-integration-test</phase>
             <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <dataFile>target/jacoco-it.exec</dataFile>
-              <outputDirectory>target/jacoco-it</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
+              <goal>restore-instrumented-classes</goal>
             </goals>
           </execution>
           <execution>
-            <id>merge-results</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>merge</goal>
-            </goals>
-            <configuration>
-              <fileSets>
-                <fileSet>
-                  <directory>target</directory>
-                  <includes>
-                    <include>*.exec</include>
-                  </includes>
-                </fileSet>
-              </fileSets>
-              <destFile>target/jacoco.exec</destFile>
-            </configuration>
-          </execution>
-          <execution>
-            <id>post-merge-report</id>
+            <id>report</id>
             <phase>verify</phase>
             <goals>
               <goal>report</goal>
@@ -310,9 +292,6 @@
         <version>${exists-maven-plugin.version}</version>
         <configuration>
           <property>skip-deploy-to-central</property>
-          <!-- Deliberately OSSRH and not repo1.maven.org: a freshly published version shows up here
-               immediately, while the sync to repo1 lags. Checking repo1 would report "not present"
-               shortly after a release and trigger a duplicate deploy. -->
           <repository>https://oss.sonatype.org/content/repositories/releases/</repository>
         </configuration>
         <executions>
