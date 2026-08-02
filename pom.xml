@@ -3,7 +3,7 @@
 
   <groupId>com.itelg</groupId>
   <artifactId>texin</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0-RC1</version>
 
   <name>texin</name>
   <description>With Texin you have to implement only one reader to process different spreadsheet-files (XLSX, CSV, TXT)</description>
@@ -32,7 +32,7 @@
     <!-- Build -->
     <maven.build.timestamp.format>dd.MM.yyyy HH:mm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>21</java.version>
+    <java.version>25</java.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
@@ -41,18 +41,22 @@
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
     <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
-    <maven-scm-provider-gitexe.version>1.11.3</maven-scm-provider-gitexe.version>
+    <maven-scm-provider-gitexe.version>2.2.1</maven-scm-provider-gitexe.version>
     <exists-maven-plugin.version>0.15.2</exists-maven-plugin.version>
     <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
     <!-- Other -->
     <poi.version>5.5.1</poi.version>
     <slf4j-api.version>2.0.18</slf4j-api.version>
     <commons-io.version>2.22.0</commons-io.version>
-    <commons-codec.version>1.22.0</commons-codec.version>
+    <commons-codec.version>1.22.1</commons-codec.version>
+    <!-- lombok must be pinned explicitly for the annotation-processor path -->
+    <lombok.version>1.18.46</lombok.version>
     <!-- Testing -->
     <jacoco.version>0.8.15</jacoco.version>
     <assertj.version>3.27.7</assertj.version>
     <junit.version>6.1.2</junit.version>
+    <!-- Explicit so Sonar reads the combined UT+IT jacoco report instead of guessing via scanner-default path conventions. -->
+    <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
   <dependencyManagement>
@@ -83,6 +87,12 @@
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
       <version>${poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -122,6 +132,7 @@
         <configuration>
           <release>${java.version}</release>
           <parameters>true</parameters>
+          <proc>full</proc>
         </configuration>
       </plugin>
       <plugin>
@@ -180,6 +191,7 @@
           <argLine>-Duser.timezone=Europe/Berlin</argLine>
           <systemPropertyVariables>
             <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+            <jacoco-agent.append>true</jacoco-agent.append>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -189,6 +201,10 @@
         <version>${maven-failsafe-plugin.version}</version>
         <configuration>
           <reportsDirectory>target/surefire-reports</reportsDirectory>
+          <systemPropertyVariables>
+            <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+            <jacoco-agent.append>true</jacoco-agent.append>
+          </systemPropertyVariables>
         </configuration>
         <executions>
           <execution>
@@ -227,54 +243,28 @@
               <goal>restore-instrumented-classes</goal>
             </goals>
           </execution>
+          <!--
+            default-restore-instrumented-classes above runs at its default phase (prepare-package) to keep the
+            packaged jar free of instrumented bytecode. But that means classes are back to non-instrumented by the
+            time integration-test runs (pre-integration-test/integration-test come after prepare-package/package in
+            the lifecycle) - so without re-instrumenting here, Failsafe would silently record zero IT coverage.
+          -->
           <execution>
-            <id>default-report</id>
-            <phase>prepare-package</phase>
+            <id>pre-integration-test-instrument</id>
+            <phase>pre-integration-test</phase>
             <goals>
-              <goal>report</goal>
+              <goal>instrument</goal>
             </goals>
-            <configuration>
-              <dataFile>target/jacoco-ut.exec</dataFile>
-              <outputDirectory>target/jacoco-ut</outputDirectory>
-            </configuration>
           </execution>
           <execution>
-            <id>integration-test-report</id>
+            <id>post-integration-test-restore</id>
             <phase>post-integration-test</phase>
             <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <dataFile>target/jacoco-it.exec</dataFile>
-              <outputDirectory>target/jacoco-it</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
+              <goal>restore-instrumented-classes</goal>
             </goals>
           </execution>
           <execution>
-            <id>merge-results</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>merge</goal>
-            </goals>
-            <configuration>
-              <fileSets>
-                <fileSet>
-                  <directory>target</directory>
-                  <includes>
-                    <include>*.exec</include>
-                  </includes>
-                </fileSet>
-              </fileSets>
-              <destFile>target/jacoco.exec</destFile>
-            </configuration>
-          </execution>
-          <execution>
-            <id>post-merge-report</id>
+            <id>report</id>
             <phase>verify</phase>
             <goals>
               <goal>report</goal>
@@ -310,9 +300,6 @@
         <version>${exists-maven-plugin.version}</version>
         <configuration>
           <property>skip-deploy-to-central</property>
-          <!-- Deliberately OSSRH and not repo1.maven.org: a freshly published version shows up here
-               immediately, while the sync to repo1 lags. Checking repo1 would report "not present"
-               shortly after a release and trigger a duplicate deploy. -->
           <repository>https://oss.sonatype.org/content/repositories/releases/</repository>
         </configuration>
         <executions>
